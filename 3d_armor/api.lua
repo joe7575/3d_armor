@@ -301,7 +301,10 @@ armor.set_player_armor = function(self, player)
 		})
 		pova.do_override(player)
 	else
-		player:set_physics_override(physics)
+		-- Check access conflicts with other mods
+		if player:get_meta():get_int("player_physics_locked") == 0 then
+			player:set_physics_override(physics)
+		end
 	end
 	self.textures[name].armor = texture
 	self.textures[name].preview = preview
