@@ -5,15 +5,11 @@ local last_punch_time = {}
 local pending_players = {}
 local timer = 0
 
--- support for i18n
-armor_i18n = { }
-armor_i18n.gettext, armor_i18n.ngettext = dofile(modpath.."/intllib.lua")
+dofile(modpath.."/api.lua")
 
 -- local functions
-local S = armor_i18n.gettext
 local F = minetest.formspec_escape
-
-dofile(modpath.."/api.lua")
+local S = armor.get_translator
 
 -- integration test
 if minetest.settings:get_bool("enable_3d_armor_integration_test") then
@@ -299,14 +295,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
   local player_name = player:get_player_name()
 	for field, _ in pairs(fields) do
 		if string.find(field, "skins_set") then
-			minetest.after(0, function()
-        local pplayer = minetest.get_player_by_name(player_name)
-        if player then
-          local skin = armor:get_player_skin(name)
-          armor.textures[name].skin = skin
-          armor:set_player_armor(pplayer)
-        end
-			end)
+			armor:update_skin(player_name)
 		end
 	end
 end)
